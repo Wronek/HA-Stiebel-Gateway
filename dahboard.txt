@@ -1,0 +1,273 @@
+ - path: default_view
+    title: Pompa ciepła
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Całkowite
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.cop_gesamt
+                min: 2
+                max: 5
+                needle: false
+                name: COP Gesamt
+              - type: gauge
+                entity: sensor.cop_heiz
+                min: 2
+                max: 5
+                name: COP Heizen
+              - type: gauge
+                entity: sensor.cop_ww
+                min: 2
+                max: 5
+                name: COP Wasser
+          - type: custom:mushroom-title-card
+            title: Dzisiaj
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.cop_gesamt_today
+                min: 2
+                max: 5
+                needle: false
+                name: 'COP Całkowite '
+              - type: gauge
+                entity: sensor.cop_heiz_today
+                min: 2
+                max: 5
+                name: COP CO
+              - type: gauge
+                entity: sensor.cop_ww_today
+                min: 2
+                max: 5
+                name: COP CWU
+          - square: false
+            type: grid
+            cards:
+              - type: tile
+                entity: sensor.programmschalter_with_icon
+                name: Programm
+                vertical: false
+              - type: tile
+                entity: sensor.sommerbetrieb_text
+                'name:': Betriebsart
+                vertical: false
+            columns: 2
+          - type: entities
+            entities:
+              - entity: sensor.programmschalter
+                name: Programmschalter
+              - entity: select.programmschalter_set
+            title: Programmschalter
+          - type: history-graph
+            entities:
+              - entity: binary_sensor.pompa_ladujaca_bufor
+              - entity: binary_sensor.pompa_ladujaca_cwu
+              - entity: binary_sensor.sprezarka
+              - entity: binary_sensor.pompa_obiegu_grzewczego_hk1
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Einstellungen
+          - type: entities
+            entities:
+              - entity: sensor.aussentemp
+                name: Zewnętrzna-AUSSENTEMP
+              - entity: sensor.temperature_inside
+              - entity: sensor.actual_heating_circuit
+                name: Actual heating circuit-Heizkreis
+              - entity: sensor.hilfskesselsoll
+                name: Zadana obiegu-HILFSKESSELSOLL
+              - entity: sensor.zeit
+                name: Uhrzeit Ist
+                secondary_info: none
+              - entity: button.update_uhrzeit
+                name: Uhrzeit setzen
+                secondary_info: none
+              - entity: sensor.datum
+                name: Datum Ist
+              - entity: button.update_datum
+                name: Datum setzen
+              - entity: sensor.speichersolltemp
+                name: Zadana CWU-SPEICHERSOLLTEMP
+              - entity: sensor.humidity
+              - entity: binary_sensor.pompa_ladujaca_bufor
+              - entity: binary_sensor.pompa_ladujaca_cwu
+              - entity: binary_sensor.pompa_obiegu_grzewczego_hk1
+              - entity: sensor.sammel_relaisstatus
+              - entity: binary_sensor.sprezarka
+            title: Zeit/Datum
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: CWU
+          - type: custom:apexcharts-card
+            apex_config:
+              chart:
+                stacked: true
+              xaxis:
+                labels:
+                  format: dd
+              legend:
+                show: false
+            graph_span: 7d1s
+            span:
+              end: day
+            show:
+              last_updated: false
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.el_aufnahmeleistung_ww_tag
+                name: Energia elektryczna
+                type: column
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
+              - entity: sensor.waermeertrag_ww_tag
+                name: Ilość ciepła
+                type: column
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            all_series_config:
+              stroke_width: 1
+              curve: smooth
+            series:
+              - entity: sensor.speicheristtemp
+                name: Ist
+              - entity: sensor.speichersolltemp
+                name: Soll
+          - type: horizontal-stack
+            cards:
+              - type: entities
+                entities:
+                  - entity: input_number.speichersolltemp_set
+                    name: Komforttemperatur
+                    secondary_info: none
+                  - entity: input_number.speichersolltemp2_set
+                    name: Eco-Temperatur
+                    secondary_info: none
+                state_color: true
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Heizung
+          - type: custom:apexcharts-card
+            apex_config:
+              chart:
+                stacked: true
+              xaxis:
+                labels:
+                  format: dd
+              legend:
+                show: false
+            graph_span: 7d1s
+            span:
+              end: day
+            show:
+              last_updated: false
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.el_aufnahmeleistung_heiz_tag
+                name: Aufnahmeleistung
+                type: column
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
+              - entity: sensor.waermeertrag_heiz_tag
+                name: Wärmeertrag
+                type: column
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            all_series_config:
+              stroke_width: 1
+              curve: smooth
+            series:
+              - entity: sensor.wpvorlaufist
+                name: Zasilanie
+              - entity: sensor.ruecklaufisttemp
+                name: Powrót
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            all_series_config:
+              stroke_width: 1
+              curve: smooth
+            series:
+              - entity: sensor.actual_heating_circuit
+                name: Aktualna obiegu
+              - entity: sensor.hilfskesselsoll
+                name: Zadana obiegu
+          - type: custom:apexcharts-card
+            apex_config:
+              chart:
+                stacked: true
+              xaxis:
+                labels:
+                  format: dd
+              legend:
+                show: false
+            graph_span: 7d1s
+            span:
+              end: day
+            show:
+              last_updated: false
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.cop_gesamt_today
+                name: Całkowite
+                type: line
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
+              - entity: sensor.cop_ww_today
+                name: CWU
+                type: line
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
+              - entity: sensor.cop_heiz_today
+                name: CO
+                type: line
+                group_by:
+                  func: last
+                  duration: 1d
+                show:
+                  datalabels: true
